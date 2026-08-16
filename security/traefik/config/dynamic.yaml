@@ -1,0 +1,226 @@
+tls:
+  certificates:
+    - certFile: /certs/fullchain.pem
+      keyFile: /certs/cert.key
+  stores:
+    default:
+      defaultCertificate:
+        certFile: /certs/fullchain.pem
+        keyFile: /certs/cert.key
+http:
+  middlewares:
+    sablier-portainer:
+      plugin:
+        sablier:
+          sablierUrl: http://sablier:10000
+          sessionDuration: 5m
+          names: "portainer-portainer-1"
+          dynamic:
+            displayName: "Portainer"
+            refreshFrequency: 5s
+            showDetails: "true"
+            theme: hacker-terminal
+    authentik:
+      forwardAuth:
+        address: http://authentik-server-1:9000/outpost.goauthentik.io/auth/traefik
+        trustForwardHeader: true
+        authResponseHeaders:
+          - X-authentik-username
+          - X-authentik-groups
+          - X-authentik-email
+          - X-authentik-name
+          - X-authentik-uid
+          - X-authentik-jwt
+          - X-authentik-meta-jwks
+          - X-authentik-meta-outpost
+          - X-authentik-meta-provider
+          - X-authentik-meta-app
+          - X-authentik-meta-version
+    sablier-searxng:
+      plugin:
+        sablier:
+          sablierUrl: http://sablier:10000
+          sessionDuration: 5m
+          names: "searxng-searxng-1"
+          dynamic:
+            displayName: "SearXNG"
+            refreshFrequency: 5s
+            showDetails: "true"
+            theme: hacker-terminal
+    sablier-grafana:
+      plugin:
+        sablier:
+          sablierUrl: http://sablier:10000
+          sessionDuration: 5m
+          names: "grafana"
+          dynamic:
+            displayName: "Grafana"
+            refreshFrequency: 5s
+            showDetails: "true"
+            theme: hacker-terminal
+    #sablier-n8n:
+      #plugin:
+        #sablier:
+          #sablierUrl: http://sablier:10000
+          #sessionDuration: 5m
+          #names: "n8n-n8n-1"
+          #dynamic:
+            #displayName: "n8n"
+            #refreshFrequency: 5s
+            #showDetails: "true"
+            #theme: hacker-terminal
+    sablier-immich:
+      plugin:
+        sablier:
+          sablierUrl: http://sablier:10000
+          sessionDuration: 5m
+          names: "immich_server"
+          dynamic:
+            displayName: "Immich"
+            refreshFrequency: 5s
+            showDetails: "true"
+            theme: hacker-terminal
+    sablier-paperless:
+      plugin:
+        sablier:
+          sablierUrl: http://sablier:10000
+          sessionDuration: 5m
+          names: "paperless-webserver-1"
+          dynamic:
+            displayName: "Paperless"
+            refreshFrequency: 5s
+            showDetails: "true"
+            theme: hacker-terminal
+    sablier-karakeep:
+      plugin:
+        sablier:
+          sablierUrl: http://sablier:10000
+          sessionDuration: 5m
+          names: "karakeep_app-web-1"
+          dynamic:
+            displayName: "Karakeep"
+            refreshFrequency: 5s
+            showDetails: "true"
+            theme: hacker-terminal
+    sablier-seerr:
+      plugin:
+        sablier:
+          sablierUrl: http://sablier:10000
+          sessionDuration: 5m
+          names: "seerr"
+          dynamic:
+            displayName: "seerr"
+            refreshFrequency: 5s
+            showDetails: "true"
+            theme: hacker-terminal
+    sablier-actual:
+      plugin:
+        sablier:
+          sablierUrl: http://sablier:10000
+          sessionDuration: 5m
+          names: "actual-actual_server-1"
+          dynamic:
+            displayName: "Actual Budget"
+            refreshFrequency: 5s
+            showDetails: "true"
+            theme: hacker-terminal
+
+  routers:
+    traefik-dashboard:
+      rule: "Host(`traefik.nixos.duckdarsh.home`)"
+      entryPoints: [websecure]
+      middlewares: [authentik]
+      service: api@internal
+      tls: {}
+    portainer:
+      rule: "Host(`portainer.nixos.duckdarsh.home`)"
+      entryPoints: [websecure]
+      middlewares: [sablier-portainer]
+      service: portainer
+      tls: {}
+    searxng:
+      rule: "Host(`searxng.nixos.duckdarsh.home`)"
+      entryPoints: [websecure]
+      middlewares: [sablier-searxng]
+      service: searxng
+      tls: {}
+    grafana:
+      rule: "Host(`grafana.nixos.duckdarsh.home`)"
+      entryPoints: [websecure]
+      middlewares: [sablier-grafana]
+      service: grafana
+      tls: {}
+    n8n:
+      rule: "Host(`n8n.nixos.duckdarsh.home`)"
+      entryPoints: [websecure]
+      #middlewares: [sablier-n8n]
+      service: n8n
+      tls: {}
+    immich:
+      rule: "Host(`immich.nixos.duckdarsh.home`)"
+      entryPoints: [websecure]
+      middlewares: [sablier-immich]
+      service: immich
+      tls: {}
+    paperless:
+      rule: "Host(`paperless.nixos.duckdarsh.home`)"
+      entryPoints: [websecure]
+      middlewares: [sablier-paperless]
+      service: paperless
+      tls: {}
+    karakeep:
+      rule: "Host(`karakeep.nixos.duckdarsh.home`)"
+      entryPoints: [websecure]
+      middlewares: [sablier-karakeep]
+      service: karakeep
+      tls: {}
+    seerr:
+      rule: "Host(`seerr.nixos.duckdarsh.home`)"
+      entryPoints: [websecure]
+      middlewares: [sablier-seerr]
+      service: seerr
+      tls: {}
+    actual:
+      rule: "Host(`actual.nixos.duckdarsh.home`)"
+      entryPoints: [websecure]
+      middlewares: [sablier-actual]
+      service: actual
+      tls: {}
+
+  services:
+    portainer:
+      loadBalancer:
+        servers:
+          - url: "http://portainer-portainer-1:9000"
+    searxng:
+      loadBalancer:
+        servers:
+          - url: "http://searxng-searxng-1:8080"
+    grafana:
+      loadBalancer:
+        servers:
+          - url: "http://grafana:3000"
+    n8n:
+      loadBalancer:
+        servers:
+          - url: "http://n8n-n8n-1:5678"
+    immich:
+      loadBalancer:
+        servers:
+          - url: "http://immich_server:2283"
+    paperless:
+      loadBalancer:
+        servers:
+          - url: "http://paperless-webserver-1:8000"
+    karakeep:
+      loadBalancer:
+        servers:
+          - url: "http://karakeep_app-web-1:3000"
+    seerr:
+      loadBalancer:
+        servers:
+          - url: "http://seerr:5055"
+    actual:
+      loadBalancer:
+        servers:
+          - url: "http://actual-actual_server-1:5006"

@@ -1,0 +1,16 @@
+
+services:
+  bind9:
+    container_name: DNS
+    image: ubuntu/bind9:latest
+    environment:
+      - BIND9_USER=root
+      - TZ=Asia/Kolkata
+    ports:
+      - "127.0.0.1:53:53/tcp"
+      - "127.0.0.1:53:53/udp"
+    volumes:
+      - /home/duckdarsh/home-lab/configs/infra/bind9/named.conf:/etc/bind/named.conf:ro
+      - /home/duckdarsh/home-lab/appdata/infra/bind9/cache:/var/cache/bind
+      - /home/duckdarsh/home-lab/appdata/infra/bind9/records:/var/lib/bind
+    restart: always

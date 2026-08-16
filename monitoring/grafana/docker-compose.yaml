@@ -1,0 +1,16 @@
+services:
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    volumes: 
+      - grafana-data:/var/lib/grafana
+    networks:
+      - frontend
+    restart: unless-stopped
+volumes:
+  grafana-data:
+    external: true
+    name: grafana_grafana-data
+networks:
+  frontend:
+    external: true

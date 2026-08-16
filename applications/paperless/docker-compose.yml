@@ -1,0 +1,44 @@
+services:
+  broker:
+    image: redis:7
+    networks:
+      - frontend
+    restart: always
+  db:
+    image: postgres:15
+    restart: always
+    networks:
+      - frontend
+    volumes:
+      - /home/duckdarsh/home-lab/appdata/apps/paperless/postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    env_file:
+      - /home/duckdarsh/home-lab/secrets/paperless/paperless.env
+  webserver:
+    image: ghcr.io/paperless-ngx/paperless-ngx:latest
+    restart: always
+    depends_on:
+      - db
+      - broker
+    networks:
+      - frontend
+    volumes:
+      - /home/duckdarsh/home-lab/appdata/apps/paperless/data:/usr/src/paperless/data
+      - /home/duckdarsh/home-lab/appdata/apps/paperless/media:/usr/src/paperless/media
+      - /home/duckdarsh/home-lab/appdata/apps/paperless/consume:/usr/src/paperless/consume
+      - /home/duckdarsh/home-lab/appdata/apps/paperless/export:/usr/src/paperless/export
+    environment:
+      PAPERLESS_REDIS: redis://broker:6379
+      PAPERLESS_DBHOST: ${PAPERLESS_DBHOST}
+      PAPERLESS_DBNAME: ${PAPERLESS_DBNAME}
+      PAPERLESS_DBUSER: ${PAPERLESS_DBUSER}
+      PAPERLESS_DBPASS: ${PAPERLESS_DBPASS}
+      PAPERLESS_URL: https://paperless.nixos.duckdarsh.home
+    env_file:
+      - /home/duckdarsh/home-lab/secrets/paperless/paperless.env
+networks:
+  frontend:
+    external: true

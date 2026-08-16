@@ -1,0 +1,19 @@
+services:
+  smartctl-exporter:
+    image: prometheuscommunity/smartctl-exporter:latest
+    restart: unless-stopped
+    privileged: true
+    user: root
+    devices:
+      - /dev/sda
+      - /dev/sdb
+      - /dev/sdd
+    command:
+      - "--smartctl.device=/dev/sda"
+      - "--smartctl.device=/dev/sdb"
+      - "--smartctl.device=/dev/sdd;sat"
+    networks:
+      - frontend
+networks:
+  frontend:
+    external: true

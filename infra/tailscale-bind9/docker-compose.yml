@@ -1,0 +1,30 @@
+services:
+  tailscale-bind9:
+    image: tailscale/tailscale:latest
+    hostname: tailscale-bind9
+    env_file:
+      - ../../../secrets/infra/tailscale-bind9/tailscale-bind9.env
+    environment:    
+      - TS_STATE_DIR=/var/lib/tailscale
+    volumes:
+      - /home/duckdarsh/home-lab/appdata/infra/tailscale-bind9/tailscale-bind9/state:/var/lib/tailscale
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - net_admin
+    restart: unless-stopped
+  bind9:
+    image: ubuntu/bind9:latest
+    container_name: bind9-tailscale-dns
+    environment:
+      - BIND9_USER=root
+      - TZ=Asia/Kolkata
+    volumes:
+      - /home/duckdarsh/home-lab/configs/infra/tailscale-bind9/named.conf:/etc/bind/named.conf:ro
+      - /home/duckdarsh/home-lab/appdata/infra/tailscale-bind9/cache:/var/cache/bind
+      - /home/duckdarsh/home-lab/appdata/infra/tailscale-bind9/records:/var/lib/bind
+    restart: always
+    depends_on:
+      - tailscale-bind9
+    network_mode: service:tailscale-bind9
+

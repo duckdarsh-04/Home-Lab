@@ -1,0 +1,13 @@
+services:
+  sablier: 
+    image: sablierapp/sablier:1.10.1
+    container_name: sablier
+    volumes: 
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+    networks:
+      - frontend
+
+networks:
+  frontend:
+    external: true

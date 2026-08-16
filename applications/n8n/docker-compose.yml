@@ -1,0 +1,26 @@
+services:
+  n8n:
+    image: n8nio/n8n:latest
+    restart: always
+    env_file:
+      - /home/duckdarsh/home-lab/secrets/n8n/.env
+    volumes:
+      - /home/duckdarsh/home-lab/appdata/apps/n8n/data:/home/node/.n8n
+      - /home/duckdarsh/home-lab/appdata/apps/n8n/files:/files
+    depends_on:
+      - postgres
+    networks:
+      - frontend
+  # If you're running your own external PostgreSQL instance, you can comment out this service
+  postgres:
+    image: postgres:15
+    restart: always
+    env_file:
+      - /home/duckdarsh/home-lab/secrets/n8n/.env
+    volumes:
+      - /home/duckdarsh/home-lab/appdata/apps/n8n/postgres-data:/var/lib/postgresql/data
+
+networks:
+  frontend:
+    external: true
+

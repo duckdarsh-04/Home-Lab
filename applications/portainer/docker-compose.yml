@@ -1,0 +1,16 @@
+
+services:
+  portainer:
+    image: portainer/portainer-ce:latest
+    networks:
+      - frontend
+    #ports:
+      #- 9443:9443
+    volumes:
+      - /home/duckdarsh/home-lab/appdata/apps/portainer/data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /home/duckdarsh/openssl/fullchain.pem:/etc/ssl/certs/ca-certificates.crt:ro
+    restart: unless-stopped
+networks:
+  frontend:
+    external: true

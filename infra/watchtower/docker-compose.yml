@@ -1,0 +1,7 @@
+services:
+  watchtower:
+    image: containrrr/watchtower:latest
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --debug --cleanup --schedule "0 0 3 * * *" --api-version 1.40

@@ -1,0 +1,19 @@
+
+services:
+  vaultwarden:
+    image: vaultwarden/server:latest
+    restart: unless-stopped
+    environment:
+      DOMAIN: "https://vaultwarden.nixos.duckdarsh.home"
+      SIGNUPS_ALLOWED: "true"
+    volumes:
+      - /home/duckdarsh/home-lab/appdata/apps/vaultwarden/vaultwarden-data:/data
+    networks:
+      - frontend
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.vaultwarden.rule=Host(`vaultwarden.nixos.duckdarsh.home`)"
+      - "traefik.http.routers.vaultwarden.tls=true"
+networks:
+  frontend:
+    external: true

@@ -1,0 +1,19 @@
+services:
+  dozzle:
+    image: amir20/dozzle:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /home/duckdarsh/home-lab/appdata/monitoring/dozzle:/data
+    #ports:
+      #- 8081:8080
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dozzle.rule=Host(`dozzle.nixos.duckdarsh.home`)"
+      - "traefik.http.routers.dozzle.tls=true"
+      - "traefik.http.routers.dozzle.middlewares=authentik@file"
+    networks:
+      - frontend
+    restart: unless-stopped
+networks:
+  frontend:
+    external: true

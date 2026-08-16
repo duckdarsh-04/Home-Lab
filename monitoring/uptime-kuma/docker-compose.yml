@@ -1,0 +1,21 @@
+---
+services:
+  uptime-kuma:
+    image: louislam/uptime-kuma:1
+    container_name: uptime-kuma
+    volumes:
+      - /home/duckdarsh/home-lab/appdata/monitoring/uptime-kuma:/app/data
+    networks:
+      - frontend
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.uptime-kuma.rule=Host(`uptime-kuma.nixos.duckdarsh.home`)
+      - traefik.http.routers.uptime-kuma.entrypoints=websecure
+      - traefik.http.services.uptime-kuma.loadbalancer.server.port=3001
+      - traefik.http.routers.uptime-kuma.tls=true
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+networks:
+  frontend:
+    external: true

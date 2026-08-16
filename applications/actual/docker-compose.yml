@@ -1,0 +1,17 @@
+services:
+  actual_server:
+    image: docker.io/actualbudget/actual-server:latest
+    networks:
+      - frontend
+    volumes:
+      - /home/duckdarsh/home-lab/appdata/apps/actual/data:/data
+    healthcheck:
+      test: ['CMD-SHELL', 'node src/scripts/health-check.js']
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    restart: unless-stopped
+networks:
+  frontend:
+    external: true

@@ -1,0 +1,25 @@
+---
+networks:
+  frontend:
+    external: true
+volumes:
+  prometheus-data:
+    driver: local
+services:
+  prometheus:
+    image: prom/prometheus:v2.37.9
+    container_name: prometheus
+    command: "--config.file=/etc/prometheus/prometheus.yaml"
+    volumes:
+      - ./config/prometheus.yaml:/etc/prometheus/prometheus.yaml:ro
+      - prometheus-data:/prometheus
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.prometheus.rule=Host(`prometheus.nixos.duckdarsh.home`)
+      - traefik.http.routers.prometheus.entrypoints=websecure
+      - traefik.http.services.prometheus.loadbalancer.server.port=9090
+      - traefik.http.routers.prometheus.tls=true
+      - traefik.http.routers.prometheus.middlewares=authentik@file
+    networks:
+      - frontend
+    restart: unless-stopped
