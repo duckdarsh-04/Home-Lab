@@ -1,6 +1,6 @@
 services:
   sablier: 
-    image: sablierapp/sablier:1.10.1
+    image: sablierapp/sablier:1.17.0
     container_name: sablier
     volumes: 
       - /var/run/docker.sock:/var/run/docker.sock
