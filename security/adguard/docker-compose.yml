@@ -1,0 +1,22 @@
+services:
+  adguardhome:
+    image: adguard/adguardhome
+    container_name: adguardhome
+    restart: unless-stopped
+    volumes:
+      - ../../../appdata/security/adguard/work:/opt/adguardhome/work
+      - ../../../appdata/security/adguard/conf:/opt/adguardhome/conf
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+    labels: 
+      - "traefik.enable=true"
+      - "traefik.http.routers.adguard.rule=Host(`adguard.duckdarsh.nixos.home`)"
+      - "traefik.http.routers.adguard.entrypoints=websecure"
+      - "traefik.http.routers.adguard.tls=true"
+      - "traefik.http.services.adguard.loadbalancer.server.port=3000"
+    networks:
+      - frontend 
+networks: 
+  frontend:
+    external: true
