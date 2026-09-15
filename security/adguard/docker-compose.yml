@@ -7,14 +7,14 @@ services:
       - ../../../appdata/security/adguard/work:/opt/adguardhome/work
       - ../../../appdata/security/adguard/conf:/opt/adguardhome/conf
     ports:
-      - "53:53/tcp"
-      - "53:53/udp"
+      - "192.168.0.121:53:53/tcp"
+      - "192.168.0.121:53:53/udp"
     labels: 
       - "traefik.enable=true"
-      - "traefik.http.routers.adguard.rule=Host(`adguard.duckdarsh.nixos.home`)"
+      - "traefik.http.routers.adguard.rule=Host(`adguard.nixos.duckdarsh.home`)"
       - "traefik.http.routers.adguard.entrypoints=websecure"
       - "traefik.http.routers.adguard.tls=true"
-      - "traefik.http.services.adguard.loadbalancer.server.port=3000"
+      - "traefik.http.services.adguard.loadbalancer.server.port=3001"
     networks:
       - frontend 
 networks: 

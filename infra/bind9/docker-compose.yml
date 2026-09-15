@@ -6,11 +6,14 @@ services:
     environment:
       - BIND9_USER=root
       - TZ=Asia/Kolkata
-    ports:
-      - "127.0.0.1:53:53/tcp"
-      - "127.0.0.1:53:53/udp"
+    networks:
+      frontend:
+        ipv4_address: 172.26.0.24
     volumes:
       - /home/duckdarsh/home-lab/configs/infra/bind9/named.conf:/etc/bind/named.conf:ro
       - /home/duckdarsh/home-lab/appdata/infra/bind9/cache:/var/cache/bind
       - /home/duckdarsh/home-lab/appdata/infra/bind9/records:/var/lib/bind
     restart: always
+networks:
+  frontend:
+    external: true
