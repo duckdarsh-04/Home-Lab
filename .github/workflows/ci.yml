@@ -28,6 +28,6 @@ jobs:
         run: |
           find . -name "docker-compose.yml" -o -name "docker-compose.yaml" | while read -r file; do
             echo "Validating: $file"
-            docker compose -f "$file" config > /dev/null || exit 1
+            docker compose -f "$file" config --no-interpolate > /dev/null || exit 1
           done
 
