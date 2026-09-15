@@ -1,0 +1,33 @@
+name: CI Checks 
+
+on:
+  push: 
+    branches: [main]
+  pull_request: 
+    branches: [main]
+
+jobs: 
+  gitleaks:
+    runs-on: ubuntu-latest
+    steps: 
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Gitleaks Scan
+        uses: gitleaks/gitleaks-action@v2
+        env: 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+ 
+  validate-compose:
+    runs-on: ubuntu-latest
+    steps: 
+      - uses: actions/checkout@v4
+
+      - name: Validate all compose files
+        run: |
+          find . -name "docker-compose.yml" -o -name "docker-compose.yaml" | while read -r file; do
+            echo "Validating: $file"
+            docker compose -f "$file" config > /dev/null || exit 1
+          done
+
