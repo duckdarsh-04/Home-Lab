@@ -18,16 +18,36 @@ jobs:
         uses: gitleaks/gitleaks-action@v2
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## 🔒 Gitleaks Secret Scan" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "✅ No secrets detected" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Potential secrets found — check the scan output above" >> $GITHUB_STEP_SUMMARY
+          fi
  
   validate-compose:
     runs-on: ubuntu-latest
     steps: 
       - uses: actions/checkout@v4
 
+
       - name: Validate all compose files
+        id: validate
         run: |
+          echo "## 📋 Compose Validation" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          fail=0
           find . -name "docker-compose.yml" -o -name "docker-compose.yaml" | while read -r file; do
-            echo "Validating: $file"
-            docker compose -f "$file" config --no-interpolate > /dev/null || exit 1
+            if docker compose -f "$file" config --no-interpolate > /dev/null 2>&1; then
+              echo "- ✅ \`$file\`" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "- ❌ \`$file\`" >> $GITHUB_STEP_SUMMARY
+              fail=1
+            fi
           done
+          exit $fail
 
