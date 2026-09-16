@@ -1,6 +1,6 @@
 services:
   broker:
-    image: redis:7
+    image: redis:8
     networks:
       - frontend
     restart: always
