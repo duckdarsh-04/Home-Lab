@@ -4,11 +4,13 @@
   "packageRules": [
     {
       "matchUpdateTypes": ["patch", "minor"],
-      "automerge": true
+      "automerge": true,
+      "automergeType": "branch"
     },
     {
       "matchUpdateTypes": ["major"],
-      "automerge": false  
+      "automerge": false,
+      "labels": ["major"]
     }
   ],
   "schedule":["every weekend"]
