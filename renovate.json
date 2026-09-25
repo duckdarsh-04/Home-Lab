@@ -1,6 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended"],
+  "schedule":["every weekend"],
   "packageRules": [
     {
       "matchUpdateTypes": ["patch", "minor"],
@@ -11,7 +12,20 @@
       "matchUpdateTypes": ["major"],
       "automerge": false,
       "labels": ["major"]
+    },
+    {
+      "matchPackageNames": ["postgres"],
+      "matchDatasources": ["docker"],
+      "prBodyNotes": [
+        "---\n\n### 📋 Release Notes\n\nCheck before approving: https://www.postgresql.org/docs/release/{{{newVersion}}}.0/"
+      ]
+    },
+    {
+      "matchPackageNames": ["redis"],
+      "matchDatasources": ["docker"],
+      "prBodyNotes": [
+        "---\n\n### 📋 Release Notes\n\nCheck before approving: https://github.com/redis/redis/releases/tag/{{{newVersion}}}"
+      ]
     }
-  ],
-  "schedule":["every weekend"]
+  ]
 }
