@@ -34,7 +34,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            cd /home/duckdarsh/Home-Lab/configs
+            cd /home/duckdarsh/home-lab/configs
             git pull
             for f in ${{ steps.changed.outputs.files }}; do
               dir=$(dirname "$f")
