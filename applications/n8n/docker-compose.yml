@@ -13,7 +13,7 @@ services:
       - frontend
   # If you're running your own external PostgreSQL instance, you can comment out this service
   postgres:
-    image: postgres:15
+    image: postgres:18
     restart: always
     env_file:
       - /home/duckdarsh/home-lab/secrets/n8n/.env
